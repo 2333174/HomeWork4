@@ -12,7 +12,7 @@ namespace p2
         public string orderNum;
         public string orderName;
         public string orderClient;
-        Order(string num,string name,string client)
+        public Order(string num,string name,string client)
         {
             this.orderNum = num;
             this.orderName = name;
@@ -28,7 +28,7 @@ namespace p2
         public string goodName;
         public string goodPrice;
         public string goodNum;
-        OrderDetails(string name,string price,string number)
+        public OrderDetails(string name,string price,string number)
         {
             this.goodName = name;
             this.goodNum = number;
@@ -44,17 +44,19 @@ namespace p2
             orderList.Add(b);
             count++;
         }
-        //根据订单号删除订单
-        public void deleteOrder(string num)
+        
+        public void deleteOrder(int i)
         {
-            int m = count;
-            for (int i = 0; i < m ; i++) {
-                if (orderList[i].orderNum == num)
-                {
-                    orderList.Remove(orderList[i]);
-                    count--;
-                }
+            try
+            {
+                orderList.Remove(orderList[i]);
+                count--;
             }
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine("该订单不存在");
+            }
+
         }
         //查找订单 flag为0按订单号查找，flag为1按订单客人名称 
         public Order searchOrder(string s,int flag)
@@ -80,18 +82,24 @@ namespace p2
         //更改List第num个成员；flag为0，更改订单号，flag为1，更改订单商品名称，flag为2，更改订单客户名称
         public void changeOrder(int num,string s,int flag)
         {
-            if (num >= count) { Console.WriteLine("越界");return; }
-            switch (flag)
+            try
             {
-                case 0:
-                    orderList[num].orderNum = s;
-                    break;
-                case 1:
-                    orderList[num].orderName = s;
-                    break;
-                default:
-                    orderList[num].orderClient = s;
-                    break;
+                switch (flag)
+                {
+                    case 0:
+                        orderList[num].orderNum = s;
+                        break;
+                    case 1:
+                        orderList[num].orderName = s;
+                        break;
+                    default:
+                        orderList[num].orderClient = s;
+                        break;
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine("需要修改的订单不存在");
             }
         }
     }
@@ -99,7 +107,21 @@ namespace p2
     {
         static void Main(string[] args)
         {
-            
+            OrderDetails a1 = new OrderDetails("矿泉水","1","2");
+            OrderDetails a2 = new OrderDetails("可乐", "3", "2");
+            OrderDetails a3 = new OrderDetails("威化饼干", "5", "2");
+            OrderDetails a4 = new OrderDetails("薯片", "4", "3");
+            Order b1 = new Order("201801", "水", "小赵");
+            b1.addOrderDatails(a1);
+            b1.addOrderDatails(a2);
+            Order b2 = new Order("201802", "饼干", "小张");
+            b2.addOrderDatails(a3);
+            b2.addOrderDatails(a4);
+            OrderService c = new OrderService();
+            c.addOrder(b1);
+            c.addOrder(b2);
+            c.deleteOrder(0);
+
         }
     }
 }
